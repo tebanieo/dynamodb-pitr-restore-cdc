@@ -30,6 +30,9 @@ def lambda_handler(event, context):
 
     for record in event.get("Records"):
         response = sqs.send_message(
-            QueueUrl=SQS_ENDPOINT, MessageBody=(json.dumps(record))
+            QueueUrl=SQS_ENDPOINT, 
+            MessageBody=(json.dumps(record)), 
+            MessageDeduplicationId=json.dumps(record["dynamodb"]["Keys"]),
+            MessageGroupId=json.dumps(record["dynamodb"]["eventSourceARN"])
         )
         print(response)
